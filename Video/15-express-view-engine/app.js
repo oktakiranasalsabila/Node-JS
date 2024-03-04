@@ -9,20 +9,39 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 app.get('/', (req, res) => {
-    const mhs = [];
+    const mhs = [
+        {
+            nama:'salsabila',
+            email:'salsa@gmail.com',
+        },
+        {
+            nama:'salu',
+            email:'salu@gmail.com',
+        },
+    ];
     res.render('index', {
         nama: 'salu',
         title: 'halaman home',
         mhs,
+        layout: 'layouts/main-layout',
 
     });
 });
 app.get('/about', (req, res) => {
-    res.render('about');
+    res.render('about', {
+
+        layout: 'layouts/main-layout',
+        title: 'Halaman About',
+    });
+
 
 });
 app.get('/contact', (req, res) => {
-    res.render('contact');
+    res.render('contact', {
+
+        layout: 'layouts/main-layout',
+        title: 'Halaman Contact',
+    });
 
 });
 
