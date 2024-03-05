@@ -1,0 +1,20 @@
+<h1>Hello salsabila okta kirana selamat datang di web server nodejs</h1>
+<h2>hallo <%= nama %>
+</h2>
+<h4>Daftar Mahasiswa</h4>
+<% if (mhs.length < 1) { %>
+    <p>Data Mahasiswa masih kosong</p>
+    <% }else{%>
+
+        <% mhs.forEach(mhs=> { %>
+
+            <ul>
+                <li>
+                    nama: <%= mhs.nama %>
+                </li>
+                <li>
+                    email: <%= mhs.email %>
+                </li>
+            </ul>
+            <% }) %>
+                <% } %>
