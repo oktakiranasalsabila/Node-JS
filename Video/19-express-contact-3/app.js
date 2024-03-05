@@ -165,6 +165,7 @@ app.post('/contact/update', [
             res.redirect('/contact');
         }
     });
+    
 app.get('/contact/:nama', (req, res) => {
     const contact = findContact(req.params.nama);
 

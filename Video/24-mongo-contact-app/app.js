@@ -1,7 +1,7 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const { body, validationResult, check } = require('express-validator');
-const methodOverride=require('method-override');
+const methodOverride = require('method-override');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
@@ -125,7 +125,63 @@ app.post('/contact', [
 //         });
 //     }
 // });
-app.delete('/contact',(req,res)=>{})
+app.delete('/contact', (req, res) => {
+    Contact.deleteOne({ nama: req.body.nama }).then((result) => {
+        req.flash('msg', 'Data contact berhasil dihapus');
+        res.redirect('/contact');
+    });
+});
+
+//form edit data
+app.get('/contact/edit/:nama', async (req, res) => {
+    const contact = await Contact.findOne({ nama: req.params.nama });
+
+    res.render('edit-contact', {
+        title: 'Form Edit Data Contact',
+        layout: 'layouts/main-layout',
+        contact,
+    });
+});
+
+//proses ubah data
+app.put('/contact', [
+    body('nama').custom(async (value, { req }) => {
+        const duplikat = await Contact.findOne({ nama: value });
+        if (value !== req.body.oldNama && duplikat) {
+            throw new Error('Nama sudah digunakan');
+        }
+        return true;
+    }),
+    check('email', 'Email Tidak Valid!').isEmail(),
+    check('nohp', 'Nohp Tidak Valid!').isMobilePhone('id-ID'),
+],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+
+            res.render('edit-contact', {
+                title: 'Form ubah data Contact',
+                layout: 'layouts/main-layout',
+                errors: errors.array(),
+                contact: req.body,
+            });
+        } else {
+
+            Contact.updateOne({ _id: req.body._id },
+                {
+                    $set:{
+                        nama:req.body.nama,
+                        email:req.body.email,
+                        nohp:req.body.nohp,
+                    },
+                }
+            ).then((result) => {
+                //kirimkan flash message
+                req.flash('msg', 'Data Contact berhasil diubah');
+                res.redirect('/contact');
+            });
+        }
+    });
 
 //halaman detail contact
 app.get('/contact/:nama', async (req, res) => {
